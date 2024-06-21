@@ -1,10 +1,14 @@
-require('dotenv').config('.env');
-const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const { Builder, By, Key, until } = require('selenium-webdriver');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
+require('dotenv').config('.env');
 
 let options = new chrome.Options();
+options.addArguments('--headless'); // This line makes Chrome run in headless mode
+options.addArguments('--disable-gpu');
+options.addArguments('--no-sandbox');
+options.addArguments('--disable-dev-shm-usage');
 options.addArguments('--disable-notifications');
 
 const googleEmail = process.env.GOOGLE_EMAIL;
@@ -42,8 +46,8 @@ async function automateProductHunt() {
         const voteButton = await firstProduct.findElement(By.css('button[data-test="vote-button"]'));
         await voteButton.click();
 
-        console.log({ productLink, productName })
-        sendEmail(productName, productLink);
+        console.log({ productLink, productName });
+        await sendEmail(productName, productLink);
 
     } catch (err) {
         console.error('Error:', err);
@@ -55,8 +59,6 @@ async function automateProductHunt() {
 cron.schedule('* 18 * * *', () => {
     automateProductHunt().catch(err => console.error('Error in scheduled task:', err));
 });
-
-// automateProductHunt()
 
 async function sendEmail(productName, productLink) {
     let transporter = nodemailer.createTransport({
@@ -80,6 +82,7 @@ async function sendEmail(productName, productLink) {
     let info = await transporter.sendMail(mailOptions);
     console.log('Email sent:', info.response);
 }
+
 
 
 
