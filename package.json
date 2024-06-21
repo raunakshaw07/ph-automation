@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node script.js"
+    "start": "node script.js"
   },
   "dependencies": {
     "chrome": "^0.1.0",
