@@ -1,18 +1,21 @@
+require('dotenv').config();
 const chrome = require('selenium-webdriver/chrome');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
-require('dotenv').config('.env');
 
 let options = new chrome.Options();
-options.addArguments('--headless'); // This line makes Chrome run in headless mode
+options.addArguments('--headless');
 options.addArguments('--disable-gpu');
 options.addArguments('--no-sandbox');
 options.addArguments('--disable-dev-shm-usage');
 options.addArguments('--disable-notifications');
+options.setUserPreferences({ credential_enable_service: false });
 
 const googleEmail = process.env.GOOGLE_EMAIL;
 const googlePassword = process.env.GOOGLE_PASSWORD;
+const senderEmail = process.env.SENDER_EMAIL;
+const appPassword = process.env.APP_PASSWORD;
 
 const driver = new Builder()
     .forBrowser('chrome')
@@ -66,13 +69,13 @@ async function sendEmail(productName, productLink) {
         port: 465,
         secure: true,
         auth: {
-            user: process.env.SENDER_EMAIL,
-            pass: process.env.APP_PASSWORD
+            user: senderEmail,
+            pass: appPassword
         }
     });
 
     let mailOptions = {
-        from: process.env.SENDER_EMAIL,
+        from: senderEmail,
         to: googleEmail,
         subject: 'Product Upvoted on Product Hunt',
         html: `<p><strong>Product Name:</strong> ${productName}</p>
