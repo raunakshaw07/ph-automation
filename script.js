@@ -56,7 +56,7 @@ async function automateProductHunt() {
     }
 }
 
-cron.schedule('* 18 * * *', () => {
+cron.schedule('30 18 * * *', () => {
     automateProductHunt().catch(err => console.error('Error in scheduled task:', err));
 });
 
