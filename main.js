@@ -1,8 +1,14 @@
 require('dotenv').config();
+const express = require('express');
 const chrome = require('selenium-webdriver/chrome');
 const { Builder, By, Key, until } = require('selenium-webdriver');
-const cron = require('node-cron');
 const nodemailer = require('nodemailer');
+const cors = require('cors');
+
+const app = express();
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cors());
 
 let options = new chrome.Options();
 options.addArguments('--headless');
@@ -16,6 +22,7 @@ const googleEmail = process.env.GOOGLE_EMAIL;
 const googlePassword = process.env.GOOGLE_PASSWORD;
 const senderEmail = process.env.SENDER_EMAIL;
 const appPassword = process.env.APP_PASSWORD;
+const port = process.env.PORT;
 
 const driver = new Builder()
     .forBrowser('chrome')
@@ -82,8 +89,17 @@ async function sendEmail(productName, productLink) {
     console.log('Email sent:', info.response);
 }
 
-automateProductHunt();
 
+app.get('/automate', (req, res) => {
+  try {
+    automateProductHunt();
+    return res.json({ msg: "Product voted!!" })
+  } catch (err) {
+    return res.json(err);
+  }
+});
+
+app.listen(port, () => console.log(`Server running on port ${port}`))
 
 
 // Reference for app password -  https://support.google.com/mail/answer/185833?hl=en#:~:text=Create%20and%20manage%20your%20app,up%20only%20for%20security%20keys.
