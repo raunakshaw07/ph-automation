@@ -89,6 +89,9 @@ async function sendEmail(productName, productLink) {
     console.log('Email sent:', info.response);
 }
 
+app.get('/', (req, res) => {
+  res.json({ msg: "ProductHunt automation" });
+});
 
 app.get('/automate', (req, res) => {
   try {
