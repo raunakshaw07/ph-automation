@@ -24,12 +24,12 @@ const senderEmail = process.env.SENDER_EMAIL;
 const appPassword = process.env.APP_PASSWORD;
 const port = process.env.PORT;
 
-const driver = new Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
 
 async function automateProductHunt() {
+    const driver = new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(options)
+      .build();
     try {
         await driver.get('https://www.producthunt.com/');
 
@@ -93,9 +93,9 @@ app.get('/', (req, res) => {
   res.json({ msg: "ProductHunt automation" });
 });
 
-app.get('/automate', (req, res) => {
+app.get('/automate', async (req, res) => {
   try {
-    automateProductHunt();
+    await automateProductHunt();
     return res.json({ msg: "Product voted!!" })
   } catch (err) {
     return res.json(err);
